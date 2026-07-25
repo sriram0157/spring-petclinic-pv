@@ -1,0 +1,19 @@
+name: Docker Health Check
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:   # allows manual trigger from Actions tab
+
+jobs:
+  check-docker:
+    runs-on: self-hosted   # your EC2 runner
+    steps:
+      - name: Verify Docker version
+        run: docker --version
+
+      - name: List running containers
+        run: docker ps
+
+      - name: Run hello-world container
+        run: docker run hello-world
