@@ -1,0 +1,35 @@
+name: Gradle + Maven + Docker Check
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:   # allows manual trigger from Actions tab
+
+jobs:
+  setup-gradle:
+    runs-on: self-hosted   # your EC2 runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Gradle
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gradle
+          gradle -v
+
+  maven-docker-check:
+    runs-on: self-hosted
+    needs: setup-gradle
+    steps:
+      - name: Verify Maven installation
+        run: mvn -v
+
+      - name: Verify Docker version
+        run: docker --version
+
+      - name: List running containers
+        run: docker ps
+
+      - name: Run hello-world container
+        run: docker run hello-world
