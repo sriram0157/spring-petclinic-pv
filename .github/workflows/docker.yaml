@@ -1,4 +1,4 @@
-name: Docker Health Check
+name: Gradle Setup + DockerHub Login
 
 on:
   push:
@@ -6,14 +6,31 @@ on:
   workflow_dispatch:   # allows manual trigger from Actions tab
 
 jobs:
-  check-docker:
+  build:
     runs-on: self-hosted   # your EC2 runner
     steps:
-      - name: Verify Docker version
+      # 1. Checkout your repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # 2. Install Gradle
+      - name: Install Gradle
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gradle
+          gradle -v
+
+      # 3. Log in to DockerHub
+      - name: Log in to DockerHub
+        uses: docker/login-action@v7
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 4. Verify Docker installation
+      - name: Verify Docker
         run: docker --version
 
-      - name: List running containers
-        run: docker ps
-
+      # 5. Optional: Run a test container
       - name: Run hello-world container
         run: docker run hello-world
