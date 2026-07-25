@@ -1,0 +1,22 @@
+name: Sample file
+  on:
+    push:
+      branches: "main"
+    pull request: 
+      branches: "main"
+    workflow_dispatch:
+      jobs:
+        build:
+          runs-on: ubuntu latest
+          steps:
+            - name: checkout code
+              uses: actions/checkout@v7
+            - name: set up java
+              uses: actions/setup-java@v7
+            - name: build maven
+              uses: mvn clean install
+              
+              
+          
+      
+          
